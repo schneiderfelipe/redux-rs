@@ -99,10 +99,7 @@ impl<State, Action> Store<State, Action> {
     fn dispatch_middleware(&mut self, index: usize, action: Action) {
         if index == self.middleware.len() {
             self.dispatch_reducer(&action);
-            return;
-        }
-
-        if let Some(action) = self.middleware[index](self, action) {
+        } else if let Some(action) = self.middleware[index](self, action) {
             self.dispatch_middleware(index + 1, action);
         }
     }
