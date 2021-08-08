@@ -8,20 +8,20 @@ type State = i16;
 
 enum Action {
     Increment,
-    Decrement
+    Decrement,
 }
 
 fn reducer(state: &State, action: &Action) -> State {
     match action {
         Action::Increment => state + 1,
-        Action::Decrement => state - 1
+        Action::Decrement => state - 1,
     }
 }
 
 fn reverse_middleware(_: &mut Store<State, Action>, action: Action) -> Option<Action> {
     match action {
         Action::Increment => Some(Action::Decrement),
-        Action::Decrement => Some(Action::Increment)
+        Action::Decrement => Some(Action::Increment),
     }
 }
 

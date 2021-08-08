@@ -4,13 +4,13 @@ type State = i8;
 
 enum Action {
     Increment,
-    Decrement
+    Decrement,
 }
 
 fn reducer(state: &State, action: &Action) -> State {
     match action {
         Action::Increment => state + 1,
-        Action::Decrement => state - 1
+        Action::Decrement => state - 1,
     }
 }
 
