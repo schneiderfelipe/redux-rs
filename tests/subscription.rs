@@ -1,4 +1,4 @@
-use redux_rs::{Store, Subscription};
+use redux_rs::Store;
 
 type State = i8;
 
@@ -18,7 +18,7 @@ fn reducer(state: &State, action: &Action) -> State {
 #[test]
 fn subscription_increment() {
     let mut store = Store::new(reducer, 0);
-    let listener: Subscription<State> = |state: &State| {
+    let listener = |state: &State| {
         assert_eq!(*state, 1);
     };
     store.subscribe(listener);
@@ -28,7 +28,7 @@ fn subscription_increment() {
 #[test]
 fn subscription_decrement() {
     let mut store = Store::new(reducer, 0);
-    let listener: Subscription<State> = |state: &State| {
+    let listener = |state: &State| {
         assert_eq!(*state, -1);
     };
     store.subscribe(listener);

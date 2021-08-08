@@ -41,3 +41,8 @@ use crate::Store;
 /// store.add_middleware(shall_not_increment_middleware);
 /// ```
 pub type Middleware<State, Action> = fn(&mut Store<State, Action>, Action) -> Option<Action>;
+// TODO: should make the following work
+// pub trait Middleware<State, Action>:
+//     FnMut(&mut Store<State, Action>, Action) -> Option<Action>
+// {
+// }

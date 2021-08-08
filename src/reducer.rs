@@ -10,14 +10,14 @@
 ///     Decrement
 /// }
 ///
-/// let reducer: Reducer<u8, Action> = |state: &u8, action: &Action| -> u8 {
+/// let reducer = |state: &u8, action: &Action| -> u8 {
 ///     match action {
 ///         Action::Increment => state + 1,
 ///         Action::Decrement => state - 1
 ///     }
 /// };
 /// ```
-pub type Reducer<State, Action> = fn(&State, &Action) -> State;
+pub trait Reducer<State, Action>: Fn(&State, &Action) -> State {}
 
 #[macro_export]
 /// Combines multiple reducers into a single one.
@@ -45,7 +45,7 @@ pub type Reducer<State, Action> = fn(&State, &Action) -> State;
 /// #     0
 /// # }
 /// #
-/// let reducer: Reducer<State, Action> = combine_reducers!(State, &Action, first_reducer, second_reducer, third_reducer);
+/// let reducer = combine_reducers!(State, &Action, first_reducer, second_reducer, third_reducer);
 /// ```
 /// (`State` and `Action` being the actual types.)
 ///
@@ -71,7 +71,7 @@ pub type Reducer<State, Action> = fn(&State, &Action) -> State;
 /// }
 ///
 /// fn main() {
-///     let reducer: Reducer<u8, Action> = combine_reducers!(u8, &Action, counter_reducer, add_two_reducer);
+///     let reducer = combine_reducers!(u8, &Action, counter_reducer, add_two_reducer);
 /// }
 /// ```
 macro_rules! combine_reducers {

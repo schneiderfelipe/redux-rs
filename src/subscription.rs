@@ -17,10 +17,11 @@
 /// #
 /// let mut store = Store::new(reducer, initial_state);
 ///
-/// let listener: Subscription<State> = |state: &State| {
+/// let listener = |state: &State| {
 ///     println!("Something changed! New value: {}", state);
 /// };
 ///
 /// store.subscribe(listener);
 /// ```
-pub type Subscription<State> = fn(&State);
+pub trait Subscription<State>: Fn(&State) {}
+impl<State, Function> Subscription<State> for Function where Function: Fn(&State) {}
