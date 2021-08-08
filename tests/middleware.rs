@@ -14,14 +14,14 @@ fn reducer(state: &State, action: &Action) -> State {
     }
 }
 
-fn reverse_middleware(_: &mut Store<State, Action>, action: Action) -> Option<Action> {
+fn reverse_middleware(_: &Store<State, Action>, action: Action) -> Option<Action> {
     match action {
         Action::Increment => Some(Action::Decrement),
         Action::Decrement => Some(Action::Increment),
     }
 }
 
-fn only_increment_middleware(_: &mut Store<State, Action>, action: Action) -> Option<Action> {
+fn only_increment_middleware(_: &Store<State, Action>, action: Action) -> Option<Action> {
     match action {
         Action::Increment => Some(action),
         Action::Decrement => None,

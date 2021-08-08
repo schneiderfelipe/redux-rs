@@ -23,7 +23,7 @@ use crate::Store;
 ///     Decrement
 /// }
 ///
-/// fn shall_not_increment_middleware(store: &mut Store<State, Action>, action: Action) -> Option<Action> {
+/// fn shall_not_increment_middleware(store: &Store<State, Action>, action: Action) -> Option<Action> {
 ///     match action {
 ///         Action::Increment => Some(Action::Decrement),
 ///         Action::Decrement => None
@@ -40,9 +40,8 @@ use crate::Store;
 /// let mut store = Store::new(reducer, 0);
 /// store.add_middleware(shall_not_increment_middleware);
 /// ```
-pub type Middleware<State, Action> = fn(&mut Store<State, Action>, Action) -> Option<Action>;
-// TODO: should make the following work
-// pub trait Middleware<State, Action>:
-//     FnMut(&mut Store<State, Action>, Action) -> Option<Action>
-// {
-// }
+pub trait Middleware<State, Action>: Fn(&Store<State, Action>, Action) -> Option<Action> {}
+impl<State, Action, Function> Middleware<State, Action> for Function where
+    Function: Fn(&Store<State, Action>, Action) -> Option<Action>
+{
+}

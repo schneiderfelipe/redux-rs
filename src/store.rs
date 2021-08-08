@@ -6,7 +6,7 @@ use crate::{Middleware, Subscription, Vec};
 pub struct Store<State, Action> {
     reducer: StoreReducer<State, Action>,
     state: State,
-    middleware: Vec<Middleware<State, Action>>,
+    middleware: Vec<Box<dyn Middleware<State, Action>>>,
     subscriptions: Vec<Box<dyn Subscription<State>>>,
 }
 
@@ -102,13 +102,9 @@ impl<State, Action> Store<State, Action> {
             return;
         }
 
-        let next = self.middleware[index](self, action);
-
-        if next.is_none() {
-            return;
+        if let Some(action) = self.middleware[index](self, action) {
+            self.dispatch_middleware(index + 1, action);
         }
-
-        self.dispatch_middleware(index + 1, next.unwrap());
     }
 
     /// Runs the reducer.
@@ -159,8 +155,8 @@ impl<State, Action> Store<State, Action> {
     /// Middleware provides the possibility to intercept actions dispatched before they reach the reducer.
     ///
     /// See [`Middleware`](type.Middleware.html).
-    pub fn add_middleware(&mut self, middleware: Middleware<State, Action>) {
-        self.middleware.push(middleware);
+    pub fn add_middleware<M: Middleware<State, Action> + 'static>(&mut self, middleware: M) {
+        self.middleware.push(Box::new(middleware));
     }
 
     /// Replaces the currently used reducer.

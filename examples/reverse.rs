@@ -18,7 +18,7 @@ fn reducer(state: &State, action: &Action) -> State {
 }
 
 // A sample middleware that reverses the action passed to the reducer.
-fn reverse_middleware(_: &mut Store<State, Action>, action: Action) -> Option<Action> {
+fn reverse_middleware(_: &Store<State, Action>, action: Action) -> Option<Action> {
     match action {
         Action::Increment => Some(Action::Decrement),
         Action::Decrement => Some(Action::Increment),
