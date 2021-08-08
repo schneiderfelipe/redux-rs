@@ -115,9 +115,9 @@ impl<State, Action> Store<State, Action> {
 
     /// Runs all subscriptions.
     fn dispatch_subscriptions(&self) {
-        for subscription in &self.subscriptions {
-            subscription(self.state());
-        }
+        self.subscriptions
+            .iter()
+            .for_each(|subscription| subscription(self.state()));
     }
 
     /// Subscribes a callback to any change of the state.
