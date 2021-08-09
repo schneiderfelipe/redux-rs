@@ -1,3 +1,7 @@
+pub trait Subscription<State> {
+    fn update(&self, state: &State);
+}
+
 /// Function signature for a subscription.
 ///
 /// A Subscription will be called, whenever an action is dispatched (and reaches the reducer).
@@ -23,5 +27,11 @@
 ///
 /// store.subscribe(listener);
 /// ```
-pub trait Subscription<State>: Fn(&State) {}
-impl<State, Function> Subscription<State> for Function where Function: Fn(&State) {}
+impl<State, Function> Subscription<State> for Function
+where
+    Function: Fn(&State),
+{
+    fn update(&self, state: &State) {
+        self(state)
+    }
+}

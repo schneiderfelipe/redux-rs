@@ -1,5 +1,9 @@
 use crate::Store;
 
+pub trait Middleware<State, Action> {
+    fn next(&self, store: &Store<State, Action>, action: Action) -> Option<Action>;
+}
+
 /// Function signature for a middleware.
 ///
 /// Middleware provides the possibility to intercept actions dispatched before they reach the reducer.
@@ -40,8 +44,11 @@ use crate::Store;
 /// let mut store = Store::new(reducer, 0);
 /// store.add_middleware(shall_not_increment_middleware);
 /// ```
-pub trait Middleware<State, Action>: Fn(&Store<State, Action>, Action) -> Option<Action> {}
-impl<State, Action, Function> Middleware<State, Action> for Function where
-    Function: Fn(&Store<State, Action>, Action) -> Option<Action>
+impl<State, Action, Function> Middleware<State, Action> for Function
+where
+    Function: Fn(&Store<State, Action>, Action) -> Option<Action>,
 {
+    fn next(&self, store: &Store<State, Action>, action: Action) -> Option<Action> {
+        self(store, action)
+    }
 }

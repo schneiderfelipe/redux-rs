@@ -1,3 +1,8 @@
+// Idea from <https://www.reddit.com/r/rust/comments/5bn5pn/would_love_feedback_on_my_new_library_reduxrs_a/d9pyafm?utm_source=share&utm_medium=web2x&context=3>.
+pub trait Reducible<State, Action> {
+    fn reduce(&self, state: &State, action: &Action) -> State;
+}
+
 /// Function signature for a reducer.
 ///
 /// # Example
@@ -16,13 +21,9 @@
 ///         Action::Decrement => state - 1
 ///     }
 /// };
+///
+/// assert_eq!(reducer(&0, &Action::Increment), reducer.reduce(&0, &Action::Increment));
 /// ```
-
-// Idea from <https://www.reddit.com/r/rust/comments/5bn5pn/would_love_feedback_on_my_new_library_reduxrs_a/d9pyafm?utm_source=share&utm_medium=web2x&context=3>.
-pub trait Reducible<State, Action> {
-    fn reduce(&self, state: &State, action: &Action) -> State;
-}
-
 impl<State, Action, Function> Reducible<State, Action> for Function
 where
     Function: Fn(&State, &Action) -> State,

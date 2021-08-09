@@ -100,7 +100,7 @@ impl<State, Action> Store<State, Action> {
     fn dispatch_middleware(&mut self, index: usize, action: Action) {
         if index == self.middleware.len() {
             self.dispatch_reducer(&action);
-        } else if let Some(action) = self.middleware[index](self, action) {
+        } else if let Some(action) = self.middleware[index].next(self, action) {
             self.dispatch_middleware(index + 1, action);
         }
     }
@@ -115,7 +115,7 @@ impl<State, Action> Store<State, Action> {
     fn dispatch_subscriptions(&self) {
         self.subscriptions
             .iter()
-            .for_each(|subscription| subscription(self.state()));
+            .for_each(|subscription| subscription.update(self.state()));
     }
 
     /// Subscribes a callback to any change of the state.
