@@ -21,7 +21,6 @@ pub trait Middleware<State, Action> {
 /// #
 /// type State = i8;
 ///
-/// #[derive(Clone, Copy)]
 /// enum Action {
 ///     Increment,
 ///     Decrement
@@ -34,7 +33,7 @@ pub trait Middleware<State, Action> {
 ///     }
 /// }
 ///
-/// fn reducer(state: &State, action: &Action) -> State {
+/// fn reducer(state: &State, action: Action) -> State {
 ///     match action {
 ///         Action::Increment => state + 1,
 ///         Action::Decrement => state - 1

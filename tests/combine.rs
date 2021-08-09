@@ -2,26 +2,28 @@ use redux_rs::{combine_reducers, Reducible, Store};
 
 type State = i8;
 
+// `Action` needs to be `Clone` to be able to be used in `combine_reducers!`.
+#[derive(Clone)]
 enum Action {
     Increment,
     Decrement,
 }
 
-fn reducer_counter(state: &State, action: &Action) -> State {
+fn reducer_counter(state: &State, action: Action) -> State {
     match action {
         Action::Increment => state + 1,
         Action::Decrement => state - 1,
     }
 }
 
-fn reducer_take_two(state: &State, _: &Action) -> State {
+fn reducer_take_two(state: &State, _: Action) -> State {
     state * 2
 }
 
 #[test]
 fn combine_increment() {
     let mut store = Store::new(
-        combine_reducers!(State, &Action, reducer_counter, reducer_take_two),
+        combine_reducers!(State, Action, reducer_counter, reducer_take_two),
         0,
     );
     store.dispatch(Action::Increment);
@@ -32,7 +34,7 @@ fn combine_increment() {
 #[test]
 fn combine_increment_reverse() {
     let mut store = Store::new(
-        combine_reducers!(State, &Action, reducer_take_two, reducer_counter),
+        combine_reducers!(State, Action, reducer_take_two, reducer_counter),
         0,
     );
     store.dispatch(Action::Increment);
@@ -43,7 +45,7 @@ fn combine_increment_reverse() {
 #[test]
 fn combine_decrement() {
     let mut store = Store::new(
-        combine_reducers!(State, &Action, reducer_counter, reducer_take_two),
+        combine_reducers!(State, Action, reducer_counter, reducer_take_two),
         0,
     );
     store.dispatch(Action::Decrement);
@@ -54,7 +56,7 @@ fn combine_decrement() {
 #[test]
 fn combine_decrement_reverse() {
     let mut store = Store::new(
-        combine_reducers!(State, &Action, reducer_take_two, reducer_counter),
+        combine_reducers!(State, Action, reducer_take_two, reducer_counter),
         0,
     );
     store.dispatch(Action::Decrement);
@@ -65,7 +67,7 @@ fn combine_decrement_reverse() {
 #[test]
 fn combine_mixed() {
     let mut store = Store::new(
-        combine_reducers!(State, &Action, reducer_counter, reducer_take_two),
+        combine_reducers!(State, Action, reducer_counter, reducer_take_two),
         0,
     );
     store.dispatch(Action::Increment);
@@ -77,7 +79,7 @@ fn combine_mixed() {
 #[test]
 fn combine_mixed_reverse() {
     let mut store = Store::new(
-        combine_reducers!(State, &Action, reducer_take_two, reducer_counter),
+        combine_reducers!(State, Action, reducer_take_two, reducer_counter),
         0,
     );
     store.dispatch(Action::Increment);

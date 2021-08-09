@@ -15,7 +15,7 @@ pub trait Subscription<State> {
 /// # type State = u8;
 /// # let initial_state = 0;
 /// #
-/// # fn reducer(_: &State, action: &bool) -> State {
+/// # fn reducer(_: &State, action: bool) -> State {
 /// #     0
 /// # }
 /// #

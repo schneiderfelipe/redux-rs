@@ -47,7 +47,7 @@
 //! #     Decrement
 //! # }
 //! #
-//! fn reducer(state: &State, action: &Action) -> State {
+//! fn reducer(state: &State, action: Action) -> State {
 //!     match action {
 //!         Action::Increment => State {
 //!             counter: state.counter + 1
@@ -77,7 +77,7 @@
 //! #     Decrement
 //! # }
 //! #
-//! # fn reducer(state: &State, action: &Action) -> State {
+//! # fn reducer(state: &State, action: Action) -> State {
 //! #     match action {
 //! #         Action::Increment => State {
 //! #             counter: state.counter + 1
@@ -115,7 +115,7 @@
 //! #     Decrement
 //! # }
 //! #
-//! # fn reducer(state: &State, action: &Action) -> State {
+//! # fn reducer(state: &State, action: Action) -> State {
 //! #     match action {
 //! #         Action::Increment => State {
 //! #             counter: state.counter + 1

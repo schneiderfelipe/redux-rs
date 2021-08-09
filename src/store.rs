@@ -2,7 +2,7 @@ use crate::{Middleware, Reducible, Subscription, Vec};
 
 // TODO: should be part of a trait (this is the last thing we need to do to
 // address https://github.com/redux-rs/redux-rs/issues/5).
-type Reducer<State, Action> = fn(&State, &Action) -> State;
+type Reducer<State, Action> = fn(&State, Action) -> State;
 
 /// A container holding a state and providing the possibility to dispatch actions.
 ///
@@ -29,7 +29,7 @@ impl<State, Action> Store<State, Action> {
     ///     Decrement
     /// }
     ///
-    /// fn reducer(state: &State, action: &Action) -> State {
+    /// fn reducer(state: &State, action: Action) -> State {
     ///     match action {
     ///         Action::Increment => state + 1,
     ///         Action::Decrement => state - 1
@@ -79,7 +79,7 @@ impl<State, Action> Store<State, Action> {
     ///
     /// // ...
     ///
-    /// # fn reducer(state: &u8, action: &Action) -> u8 {
+    /// # fn reducer(state: &u8, action: Action) -> u8 {
     /// #     0
     /// # }
     /// #
@@ -90,7 +90,7 @@ impl<State, Action> Store<State, Action> {
     /// ```
     pub fn dispatch(&mut self, action: Action) {
         if self.middleware.is_empty() {
-            self.dispatch_reducer(&action);
+            self.dispatch_reducer(action);
         } else {
             self.dispatch_middleware(0, action);
         }
@@ -99,14 +99,14 @@ impl<State, Action> Store<State, Action> {
     /// Runs one middleware.
     fn dispatch_middleware(&mut self, index: usize, action: Action) {
         if index == self.middleware.len() {
-            self.dispatch_reducer(&action);
+            self.dispatch_reducer(action);
         } else if let Some(action) = self.middleware[index].next(self, action) {
             self.dispatch_middleware(index + 1, action);
         }
     }
 
     /// Runs the reducer.
-    fn dispatch_reducer(&mut self, action: &Action) {
+    fn dispatch_reducer(&mut self, action: Action) {
         self.state = (&self.reducer).reduce(self.state(), action);
         self.dispatch_subscriptions();
     }
@@ -132,7 +132,7 @@ impl<State, Action> Store<State, Action> {
     /// # type State = u8;
     /// # let initial_state = 0;
     /// #
-    /// # fn reducer(_: &State, action: &bool) -> State {
+    /// # fn reducer(_: &State, action: bool) -> State {
     /// #     0
     /// # }
     ///
@@ -176,7 +176,7 @@ impl<State, Action> Store<State, Action> {
     /// #     SomeAction
     /// # }
     /// #
-    /// # fn reducer(state: &State, action: &Action) -> State {
+    /// # fn reducer(state: &State, action: Action) -> State {
     /// #     State(0)
     /// # }
     /// #
@@ -184,7 +184,7 @@ impl<State, Action> Store<State, Action> {
     /// #
     /// store.dispatch(Action::SomeAction);
     ///
-    /// store.replace_reducer(|state: &State, action: &Action| {
+    /// store.replace_reducer(|state: &State, action: Action| {
     ///     State::something_else()
     /// });
     ///

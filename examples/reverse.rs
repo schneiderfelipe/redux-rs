@@ -10,7 +10,7 @@ enum Action {
 }
 
 // Reducer for the counter.
-fn reducer(state: &State, action: &Action) -> State {
+fn reducer(state: &State, action: Action) -> State {
     match action {
         Action::Increment => state + 1,
         Action::Decrement => state - 1,

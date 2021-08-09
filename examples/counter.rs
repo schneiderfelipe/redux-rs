@@ -15,7 +15,7 @@ enum Action {
 }
 
 // Here comes the reducer. It gets the current state plus an action to perform and returns a new state.
-fn counter_reducer(state: &State, action: &Action) -> State {
+fn counter_reducer(state: &State, action: Action) -> State {
     match action {
         Action::Increment => State {
             counter: state.counter + 1,

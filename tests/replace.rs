@@ -2,20 +2,19 @@ use redux_rs::Store;
 
 type State = i8;
 
-#[derive(Clone, Copy)]
 enum Action {
     Increment,
     Decrement,
 }
 
-fn reducer(state: &State, action: &Action) -> State {
+fn reducer(state: &State, action: Action) -> State {
     match action {
         Action::Increment => state + 1,
         Action::Decrement => state - 1,
     }
 }
 
-fn double_reducer(state: &State, action: &Action) -> State {
+fn double_reducer(state: &State, action: Action) -> State {
     match action {
         Action::Increment => state + 2,
         Action::Decrement => state - 2,

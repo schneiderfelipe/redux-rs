@@ -1,6 +1,6 @@
 // Idea from <https://www.reddit.com/r/rust/comments/5bn5pn/would_love_feedback_on_my_new_library_reduxrs_a/d9pyafm?utm_source=share&utm_medium=web2x&context=3>.
 pub trait Reducible<State, Action> {
-    fn reduce(&self, state: &State, action: &Action) -> State;
+    fn reduce(&self, state: &State, action: Action) -> State;
 }
 
 /// Function signature for a reducer.
@@ -15,20 +15,20 @@ pub trait Reducible<State, Action> {
 ///     Decrement
 /// }
 ///
-/// let reducer = |state: &u8, action: &Action| -> u8 {
+/// let reducer = |state: &u8, action: Action| -> u8 {
 ///     match action {
 ///         Action::Increment => state + 1,
 ///         Action::Decrement => state - 1
 ///     }
 /// };
 ///
-/// assert_eq!(reducer(&0, &Action::Increment), reducer.reduce(&0, &Action::Increment));
+/// assert_eq!(reducer(&0, Action::Increment), reducer.reduce(&0, Action::Increment));
 /// ```
 impl<State, Action, Function> Reducible<State, Action> for Function
 where
-    Function: Fn(&State, &Action) -> State,
+    Function: Fn(&State, Action) -> State,
 {
-    fn reduce(&self, state: &State, action: &Action) -> State {
+    fn reduce(&self, state: &State, action: Action) -> State {
         self(state, action)
     }
 }
@@ -37,6 +37,8 @@ where
 /// Combines multiple reducers into a single one.
 ///
 /// The first one gets called first, chained into the second one and so on...
+///
+/// Warning: this requires `Action` to be `Clone`.
 ///
 /// # Usage
 ///
@@ -47,19 +49,19 @@ where
 /// #
 /// # type Action = bool;
 /// #
-/// # fn first_reducer(_: &State, _: &Action) -> State {
+/// # fn first_reducer(_: &State, _: Action) -> State {
 /// #     0
 /// # }
 /// #
-/// # fn second_reducer(_: &State, _: &Action) -> State {
+/// # fn second_reducer(_: &State, _: Action) -> State {
 /// #     0
 /// # }
 /// #
-/// # fn third_reducer(_: &State, _: &Action) -> State {
+/// # fn third_reducer(_: &State, _: Action) -> State {
 /// #     0
 /// # }
 /// #
-/// let reducer = combine_reducers!(State, &Action, first_reducer, second_reducer, third_reducer);
+/// let reducer = combine_reducers!(State, Action, first_reducer, second_reducer, third_reducer);
 /// ```
 /// (`State` and `Action` being the actual types.)
 ///
@@ -68,31 +70,33 @@ where
 /// ```
 /// # use redux_rs::{combine_reducers, Reducible};
 /// #
+/// // `Action` needs to be `Clone` to be able to be used in `combine_reducers!`.
+/// #[derive(Clone)]
 /// enum Action {
 ///     Increment,
 ///     Decrement
 /// }
 ///
-/// fn counter_reducer(state: &u8, action: &Action) -> u8 {
+/// fn counter_reducer(state: &u8, action: Action) -> u8 {
 ///     match action {
 ///         Action::Increment => state + 1,
 ///         Action::Decrement => state - 1
 ///     }
 /// }
 ///
-/// fn add_two_reducer(state: &u8, _: &Action) -> u8 {
+/// fn add_two_reducer(state: &u8, _: Action) -> u8 {
 ///     state + 2
 /// }
 ///
 /// fn main() {
-///     let reducer = combine_reducers!(u8, &Action, counter_reducer, add_two_reducer);
+///     let reducer = combine_reducers!(u8, Action, counter_reducer, add_two_reducer);
 /// }
 /// ```
 macro_rules! combine_reducers {
     ($state: ty, $action: ty, $reducer: ident) => ($reducer);
     ($state: ty, $action: ty, $first: ident, $($second: ident),+) => (
         |state: &$state, action: $action| -> $state {
-            (combine_reducers!($state, $action, $($second),+)).reduce(&$first(state, action), action)
+            (combine_reducers!($state, $action, $($second),+)).reduce(&$first(state, action.clone()), action)
         }
     )
 }
