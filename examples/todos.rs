@@ -1,4 +1,7 @@
-// Inspired by <https://github.com/jaredonline/redux-rs/blob/master/examples/simple.rs>.
+// Inspired by
+// <https://github.com/jaredonline/redux-rs/blob/master/examples/simple.rs>.
+// A more complex version can be found in
+// <https://github.com/jaredonline/redux-rs/blob/master/tests/lib.rs>.
 
 use redux_rs::Store;
 use std::default::Default;

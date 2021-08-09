@@ -133,3 +133,7 @@ test counter_increment_with_subscription       ... bench:           3 ns/iter (+
 [coverage-url]: https://codecov.io/gh/redux-rs/redux-rs
 [redux-wikipedia-url]: https://en.wikipedia.org/wiki/Redux_(JavaScript_library)
 [redux-js-url]: https://redux.js.org
+
+## Alternative libraries
+
+-   [jaredonline/redux-rs](https://github.com/jaredonline/redux-rs)
