@@ -5,17 +5,24 @@
 
 # redux-rs
 
-> A Rust implementation of Redux.
+> A (very flexible) Rust implementation of Redux.
 
 ## Redux
 
-[Redux][redux-wikipedia-url], [originally implemented in JavaScript][redux-js-url], is an functional approach to state management.
-The core concept is that you have a _state_ and a _reducer_, a function to create a new state from the old one and an _action_, a description of what to change.
-Because the state itself is immutable, this results in a very clean way of managing application state, where every possible action is defined beforehand and dispatched later on.
+[Redux][redux-wikipedia-url],
+[originally implemented in JavaScript][redux-js-url], is an functional
+approach to state management.
+The core concept is that you have a _state_ and a _reducer_, a function to
+create a new state from the old one and an _action_, a description of what to
+change.
+Because the state itself is immutable, this results in a very clean way of
+managing application state, where every possible action is defined beforehand
+and dispatched later on.
 
 ## Usage
 
-You might want to read the [documentation][docs-url], which also provides examples.
+You might want to read the [documentation][docs-url], which also provides
+examples.
 
 Also consider checking out the [examples](examples).
 
@@ -25,26 +32,32 @@ To run an example:
 cargo run --example <name of the example>
 ```
 
-To jump right into it, here is the simple counter example from [examples/counter.rs](examples/counter.rs):
+To jump right into it, here is the simple counter example from
+[examples/counter.rs](examples/counter.rs):
 
 ```rust
 use redux_rs::{Store, Subscription};
 
 #[derive(Default)]
-// This is a state. It describes an immutable object.
-// It is changed via a 'reducer', a function which receives an action and returns a new state modified based on the action.
+// This is a state.
+// It describes an immutable object.
+// It is changed via a 'reducer', a function which receives an action and
+// returns a new state modified based on the action.
 struct State {
     counter: i8
 }
 
 // The actions describe what the reducer has to do.
-// Rust enums can carry a payload, which one can use to pass some value to the reducer.
+// Rust enums can carry a payload, which one can use to pass some value to
+// the reducer.
 enum Action {
     Increment,
     Decrement
 }
 
-// Here comes the reducer. It gets the current state plus an action to perform and returns a new state.
+// Here comes the reducer.
+// It gets the current state plus an action to perform and returns a
+// new state.
 fn counter_reducer(state: &State, action: &Action) -> State {
     match action {
         Action::Increment => State {
@@ -57,7 +70,9 @@ fn counter_reducer(state: &State, action: &Action) -> State {
 }
 
 fn main() {
-    // A store is a way to handle a state. It gets created once and after that it can be read and changed via dispatching actions.
+    // A store is a way to handle a state.
+    // It gets created once and after that it can be read and changed via
+    // dispatching actions.
     let mut store = Store::new(counter_reducer, State::default());
 
     // A listener getting triggered whenever the state changes.
@@ -84,7 +99,8 @@ fn main() {
 
 redux-rs supports the `no_std` feature via disabling the default features.
 
-_**Note:**_ This requires a nightly compiler and the availability of the `alloc` crate for the target.
+_**Note:**_ This requires a nightly compiler and the availability of the
+`alloc` crate for the target.
 
 In your `Cargo.toml`:
 
