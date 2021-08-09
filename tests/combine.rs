@@ -1,4 +1,4 @@
-use redux_rs::{combine_reducers, Store};
+use redux_rs::{combine_reducers, Reducible, Store};
 
 type State = i8;
 

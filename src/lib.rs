@@ -149,7 +149,7 @@ mod store;
 mod subscription;
 
 pub use middleware::Middleware;
-pub use reducer::Reducer;
+pub use reducer::Reducible;
 #[cfg(not(feature = "devtools"))]
 pub use store::Store;
 pub use subscription::Subscription;

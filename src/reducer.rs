@@ -3,7 +3,7 @@
 /// # Example
 ///
 /// ```
-/// # use redux_rs::Reducer;
+/// # use redux_rs::Reducible;
 /// #
 /// enum Action {
 ///     Increment,
@@ -17,7 +17,20 @@
 ///     }
 /// };
 /// ```
-pub trait Reducer<State, Action>: Fn(&State, &Action) -> State {}
+
+// Idea from <https://www.reddit.com/r/rust/comments/5bn5pn/would_love_feedback_on_my_new_library_reduxrs_a/d9pyafm?utm_source=share&utm_medium=web2x&context=3>.
+pub trait Reducible<State, Action> {
+    fn reduce(&self, state: &State, action: &Action) -> State;
+}
+
+impl<State, Action, Function> Reducible<State, Action> for Function
+where
+    Function: Fn(&State, &Action) -> State,
+{
+    fn reduce(&self, state: &State, action: &Action) -> State {
+        self(state, action)
+    }
+}
 
 #[macro_export]
 /// Combines multiple reducers into a single one.
@@ -27,7 +40,7 @@ pub trait Reducer<State, Action>: Fn(&State, &Action) -> State {}
 /// # Usage
 ///
 /// ```
-/// # use redux_rs::{combine_reducers, Reducer};
+/// # use redux_rs::{combine_reducers, Reducible};
 /// #
 /// # type State = u8;
 /// #
@@ -52,7 +65,7 @@ pub trait Reducer<State, Action>: Fn(&State, &Action) -> State {}
 /// # Example
 ///
 /// ```
-/// # use redux_rs::{combine_reducers, Reducer};
+/// # use redux_rs::{combine_reducers, Reducible};
 /// #
 /// enum Action {
 ///     Increment,
@@ -75,10 +88,10 @@ pub trait Reducer<State, Action>: Fn(&State, &Action) -> State {}
 /// }
 /// ```
 macro_rules! combine_reducers {
-    ($state:ty, $action:ty, $reducer:ident) => ($reducer);
-    ($state:ty, $action:ty, $first:ident, $($second:ident),+) => (
+    ($state: ty, $action: ty, $reducer: ident) => ($reducer);
+    ($state: ty, $action: ty, $first: ident, $($second: ident),+) => (
         |state: &$state, action: $action| -> $state {
-            (combine_reducers!($state, $action, $($second),+))(&$first(state, action), action)
+            (combine_reducers!($state, $action, $($second),+)).reduce(&$first(state, action), action)
         }
     )
 }

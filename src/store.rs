@@ -1,17 +1,18 @@
-use crate::{Middleware, Subscription, Vec};
+use crate::{Middleware, Reducible, Subscription, Vec};
+
+// TODO: should be part of a trait (this is the last thing we need to do to
+// address https://github.com/redux-rs/redux-rs/issues/5).
+type Reducer<State, Action> = fn(&State, &Action) -> State;
 
 /// A container holding a state and providing the possibility to dispatch actions.
 ///
 /// A store is defined by the state is holds and the actions it can dispatch.
 pub struct Store<State, Action> {
-    reducer: StoreReducer<State, Action>,
+    reducer: Reducer<State, Action>,
     state: State,
     middleware: Vec<Box<dyn Middleware<State, Action>>>,
     subscriptions: Vec<Box<dyn Subscription<State>>>,
 }
-
-// TODO: should be part of a trait
-pub type StoreReducer<State, Action> = fn(&State, &Action) -> State;
 
 impl<State, Action> Store<State, Action> {
     /// Creates a new store.
@@ -37,7 +38,7 @@ impl<State, Action> Store<State, Action> {
     ///
     /// let mut store = Store::new(reducer, 0);
     /// ```
-    pub fn new(reducer: StoreReducer<State, Action>, initial_state: State) -> Self {
+    pub fn new(reducer: Reducer<State, Action>, initial_state: State) -> Self {
         Self {
             reducer,
             state: initial_state,
@@ -106,7 +107,7 @@ impl<State, Action> Store<State, Action> {
 
     /// Runs the reducer.
     fn dispatch_reducer(&mut self, action: &Action) {
-        self.state = (&self.reducer)(self.state(), action);
+        self.state = (&self.reducer).reduce(self.state(), action);
         self.dispatch_subscriptions();
     }
 
@@ -189,7 +190,7 @@ impl<State, Action> Store<State, Action> {
     ///
     /// store.dispatch(Action::SomeAction);
     /// ```
-    pub fn replace_reducer(&mut self, reducer: StoreReducer<State, Action>) {
+    pub fn replace_reducer(&mut self, reducer: Reducer<State, Action>) {
         self.reducer = reducer;
     }
 }
