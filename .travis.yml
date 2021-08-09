@@ -5,6 +5,11 @@ rust:
     - beta
     - nightly
 
+addons:
+    apt:
+        packages:
+            - libssl-dev
+
 jobs:
     include:
         - stage: coverage
