@@ -1,17 +1,17 @@
 [package]
-name = "redux-rs"
-version = "0.1.0"
-description = "A Rust implementation of Redux."
 authors = ["Jeroen Vervaeke <jeroen@vervaeke.nu>", "Jan Baudisch <dev@baudisch.xyz>"]
-license = "MIT"
-homepage = "https://github.com/redux-rs/redux-rs"
-repository = "https://github.com/redux-rs/redux-rs.git"
-readme = "README.md"
+description = "A (very flexible) Rust implementation of Redux."
 edition = "2018"
+homepage = "https://github.com/redux-rs/redux-rs"
+license = "MIT"
+name = "redux-rs"
+readme = "README.md"
+repository = "https://github.com/redux-rs/redux-rs.git"
+version = "0.1.0"
 
 [badges]
-travis-ci = { repository = "redux-rs/redux-rs" }
 codecov = { repository = "redux-rs/redux-rs" }
+travis-ci = { repository = "redux-rs/redux-rs" }
 
 [features]
 default = ["std"]
